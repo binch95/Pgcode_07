@@ -3,72 +3,39 @@ package org.koreait;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Comparator;
-import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println(Solution.solution(new String[]{"muzi", "ryan", "frodo", "neo"}, new String[]{"muzi frodo", "muzi frodo", "ryan muzi", "ryan muzi", "ryan muzi", "frodo muzi", "frodo ryan", "neo muzi"}));
+        System.out.println(Solution.solution("2022.05.19",new String[]{"A 6", "B 12", "C 3"},new String[]{"2021.05.02 A", "2021.07.01 B", "2022.02.19 C", "2022.02.20 C"}));
     }
 }
 
 
 class Solution {
-
-    public static int solution(String[] friends, String[] gifts) {
-        Map<String, Integer> friend = new HashMap<>();
-        Map<String, Integer> admin = new HashMap<>();
-        List<ff> abc = new ArrayList<>();
-        for (String friendName : friends) {
-            friend.put(friendName, 0);
-            admin.put(friendName, 0);
-            for (String friendz : friends) {
-                if (!friendz.equals(friendName)) {
-                    ff qwe = new ff(friendName, friendz, 0);
-                    abc.add(qwe);
-                }
+    public static ArrayList solution(String today, String[] terms, String[] privacies) {
+        ArrayList answer = new ArrayList();
+        String[] day = today.split("\\.");
+        int dayday = (Integer.parseInt(day[0]) * 28 * 12) + (Integer.parseInt(day[1]) * 28) + Integer.parseInt(day[2]);
+        String[] term = null;
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (int i = 0; i < terms.length; i++) {
+            term = terms[i].split(" ");
+            map.put(term[0], Integer.parseInt(term[1]));
+        }
+        for (int i = 0; i < privacies.length; i++) {
+            String[] privacy = privacies[i].split(" ");
+            String[] newday = privacy[0].split("\\.");
+            int proday =Integer.parseInt(String.valueOf(map.get(privacy[1]))) * 28 ;
+            int newdayday = (Integer.parseInt(newday[0]) * 28* 12) + Integer.parseInt(newday[1]) * 28 + Integer.parseInt(newday[2]) + proday;
+            if (Integer.parseInt(newday[1]) > 12){
+                newday[1] = String.valueOf(Integer.parseInt(newday[1]) - 12);
+                newday[0] = String.valueOf(Integer.parseInt(newday[0]) + 1);
+            }
+            if(dayday >= newdayday){
+                answer.add(i+1);
             }
         }
-        for (String gift : gifts) {
-            String[] git = gift.split(" ");
-            abc.stream().filter(e -> e.a.equals(git[0]) && e.b.equals(git[1])).collect(Collectors.toList()).get(0).c += 1;
-
-            int answer = friend.get(git[0]);
-            friend.put(git[0], answer + 1);
-            answer = friend.get(git[1]);
-            friend.put(git[1], answer - 1);
-        }
-
-        for (String zxc : friends) {
-            int a = 0;
-            for (int i = 0; i < abc.stream().filter(e -> e.a.equals(zxc)).count(); i++) {
-                String s = abc.stream().filter(e -> e.a.equals(zxc)).collect(Collectors.toList()).get(i).b;
-                int q = abc.stream().filter(e -> e.a.equals(zxc)).collect(Collectors.toList()).get(i).c;
-                int w = abc.stream().filter(e -> e.a.equals(s) && e.b.equals(zxc)).collect(Collectors.toList()).get(0).c;
-                if ( q > w){
-                    a = a + 1;
-                } else if (q == w) {
-                    if (friend.get(abc.stream().filter(e -> e.a.equals(zxc)).collect(Collectors.toList()).get(i).a) > friend.get(abc.stream().filter(e -> e.a.equals(s) && e.b.equals(zxc)).collect(Collectors.toList()).get(0).a)){a = a +1;}
-                }
-            }
-            admin.put(zxc, a);
-        }
-
-        return admin.values().stream().max(Comparator.naturalOrder()).orElse(0);
-    }
-
-    static class ff {
-        String a;
-        String b;
-        int c;
-
-        public ff(String a, String b, int c) {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-        }
-
+        return answer;
     }
 }
