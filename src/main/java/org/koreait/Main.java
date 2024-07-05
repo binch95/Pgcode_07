@@ -1,33 +1,29 @@
 package org.koreait;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println(Solution.solution(new String[][]{{"yellow", "green", "blue"}, {"blue", "green", "yellow"}, {"yellow", "blue", "blue"}}, 0, 1));
+        System.out.println(Solution.solution(new String[]{"con", "ryan"}, new String[]{"ryan con", "ryan con", "ryan con", "ryan con"}, 2));
     }
 }
 
 class Solution {
-    public static int solution(String[][] board, int h, int w) {
-
-        ArrayList<String> cc = new ArrayList();
-        int[] dw = new int[]{0, 1, -1, 0};
-        int[] dh = new int[]{1, 0, 0, -1};
-        String middle = board[h][w];
-        for (int i = 0; i < 4; i++) {
-            try {
-                cc.add(board[h - dh[i]][w - dw[i]]);
-            } catch (NumberFormatException e) {
-                continue;
-            } catch (ArrayIndexOutOfBoundsException e) {
-                continue;
+    public static Collection<Integer> solution(String[] id_list, String[] report, int k) {
+        Map<String, Integer> map1 = new LinkedHashMap<>();
+        Set<String> set1 = new LinkedHashSet<>(List.of(report));
+        for (String re : id_list) {
+            map1.put(re, 0);
+            ArrayList<String> xx = new ArrayList<>(Arrays.asList(report).stream().distinct().filter(e -> e.split(" ")[0].equals(re)).collect(Collectors.toList()));
+            for (int i = 0; i < xx.size(); i++) {
+                String[] q = xx.get(i).split(" ");
+                if (Arrays.stream(report).distinct().filter(e -> e.split(" ")[1].equals(q[1])).count() >= k) {
+                    map1.put(q[0], map1.get(q[0]) + 1);
+                }
             }
         }
-        int answer = (int) cc.stream().filter(e -> e.equals(middle)).count();
-        return answer;
+        return map1.values();
     }
 }
