@@ -1,47 +1,39 @@
 package org.koreait;
 
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println(Solution.solution(new int[]{1, 2, 3, 4, 5}, 7));
+        System.out.println(Solution.solution(new String[]{"may", "kein", "kain", "radi"}, new int[]{5, 10, 1, 3}, new String[][]{{"may", "kein", "kain", "radi"},{"may", "kein", "brin", "deny"}, {"kon", "kain", "may", "coni"}}));
     }
 }
 
 class Solution {
-    public static int[] solution(int[] sequence, long k) {
-        int min = Integer.MAX_VALUE;
-        int start = 0;
-        int end   = 0;
-        long cur  = 0;
-        int answer_st = -1;
-        int answer_en = -1;
-        for(int i = 0; i < sequence.length; i++){
-            end++;
-            cur += sequence[i];
-            if(cur < k) continue;
-            if(cur == k){
-                if(min > end - start + 1){
-                    min = end - start + 1;
-                    answer_st = start;
-                    answer_en = end - 1;
+    public static int[] solution(String[] name, int[] yearning, String[][] photo) {
+        int[] result = new int[name.length];
+        Map<String, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < name.length; i++) {
+            map.put(name[i], yearning[i]);
+        }
+
+        for (int i = 0; i < photo.length; i++) {
+            int z = 0;
+            for (int j = 0; j < photo[i].length; j++) {
+                try {
+                    z = z + map.get(photo[i][j]);
+                }catch (NullPointerException e) {
+                    continue;
                 }
             }
-            else{
-                while(cur > k){
-                    cur -= sequence[start++];
-                }
-                if(cur == k){
-                    if(min > end - start + 1){
-                        min = end - start + 1;
-                        answer_st = start;
-                        answer_en = end - 1;
-                    }
-                }
+            if(z != 0) {
+                result[i] = z;
             }
         }
-        return new int []{answer_st, answer_en};
+
+        return result;
     }
 }
